@@ -1,0 +1,213 @@
+﻿<html>
+<head>
+    <title>webinos Address Test</title>
+    <script src="webinosAddress.js"></script>
+</head>
+<body>
+<script>
+var validAddr = [
+    "",
+    "standalone",
+    "cbot@pzh.webinos.org",
+    "cbot@my-domain.org",
+    "cbot@my---domain.org",
+    "cbot@my-d-om-ain",
+    "cBoT@pZh.WeBiNoS.oRg",
+    "2cbot2-_.a@127.0.0.1",
+    "CBOT@localhost",
+    "christos.botsikas@127.0.0.1",
+    "christos_botsikas@127.0.0.1",
+    "christos_botsikas@0",
+    "christos_botsikas@0.0",
+    "christos_botsikas@0.0.0",
+    "christos_botsikas@0.0.0.0",
+    "cbot@127.0.0.0.0.1", //this is valid by the definition of host address
+    "standalone/Dabcαβγ-sd234",
+    "standalone/Dabcαβγ-123ABC/Aabcdef1234567890ABCDEF1234567890",
+    "standalone/Dabcαβγ-123ABC/Aabcdef1234567890ABCDEF1234567890/S0123456789",
+    "standalone/S0123456789/Aabcdef1234567890ABCDEF1234567890/Dabcαβγ-123ABC",
+    "cbot@pzh.webinos.org/S0123456789/Aabcdef1234567890ABCDEF1234567890/Dabcαβγ-123ABC"
+];
+
+var invalidAddr = [
+    // look like valid
+    "cbot@localhost/Dabcαβγ-123ABC/Dabcαβγ-123ABC",
+    "standalone/Aabcdef1234567890ABCDEF1234567890/S0123456789",
+    "standalone/Dabcαβγ-123ABC/S0123456789",
+    "standalone/S0123456789",
+    "standalone/Aabcdef1234567890ABCDEF1234567890",
+    // invalid
+    "cbot@.webinos.org", //can't have . at the beginning of host address
+    "cbot@pzh.webinos..org", //can't have more that one . in a row
+    "cbot@pzh.webinos.org.", //can't have . at the end of host address
+    "cbot@-pzh.webinos.org", //can't have - at the beginning of host address
+    "cbot@pzh.webinos.org-", //can't have - at the end of host address
+    "christos botsikas@127.0.0.0.0.1",
+    "cbot.@127.0.0.1",
+    ".cbot@127.0.0.1",
+    "cbot@domain.com@127.0.0.1",
+    "test/device",
+    "test",
+    "standalone/device",
+    "standalone/Aghz",
+    "standalone/Dabcαβγ-123ABC/Aabcdef1234567890",
+    "standalone/Dabcαβγ-123ABC/Aabcdef1234567890ABCDEF1234567890/S0123456789/",
+    "standalone/Dabcαβγ-123ABC/Aabcdef1234567890ABCDEF1234567890/S0123456789/fsgsada",
+    "standalone/Dabcαβγ-123ABC/Aabcdef1234567890ABCDEF1234567890 /S0123456789"
+];
+
+
+
+function test(list, outcome) {
+    var testStatus = true;
+    var i = list.length;
+    while (i--) {
+        var msg = "";
+        try {
+            var addr = new webinosAddress(list[i]);
+            var status = addr.isValid(true);
+        } catch (e) {
+            msg = e.message;
+            status = false;
+        }
+        if (status != outcome) {
+            testStatus = false;
+            console.log(list[i] + " " + status);
+            if (msg != "") console.error(msg);
+        }
+    }
+    return testStatus;
+}
+function doTest(name, list, outcome) {
+    name = (name.length) ? " " + name + " " : " ";
+    console.log(new Array(51).join("="));
+    var testStatus = test(list, outcome);
+    var separetor = new Array(name.length + 21).join("-");
+    console.log(separetor);
+    console.log("-- The" + name + "test " + (testStatus ? "PASSED" : "FAILED") + " --");
+    console.log(separetor);
+}
+
+doTest("ValidAddr", validAddr, true);
+doTest("InvalidAddr", invalidAddr, false);
+
+console.log(new Array(51).join("="));
+console.log('new webinosAddress("user@pzh.webinos.org/S0123456789/Aabcdef1234567890ABCDEF1234567890/Dabcαβγ-123ABC")');
+var addr = new webinosAddress("user@pzh.webinos.org/S0123456789/Aabcdef1234567890ABCDEF1234567890/Dabcαβγ-123ABC");
+console.log(addr);
+console.log(".pzhUser:" + addr.pzhUser);
+console.log(".pzhAddress:" + addr.pzhAddress);
+console.log(".deviceId:" + addr.deviceId);
+console.log(".applicationId:" + addr.applicationId);
+console.log(".sessionId:" + addr.sessionId);
+console.log(".toString():" + addr.toString());
+console.log(".getAddress():" + addr.getAddress());
+console.log(".getPzh():" + addr.getPzh());
+console.log(".getAddressDevice():" + addr.getAddressDevice());
+console.log(".getAddressApplication():" + addr.getAddressApplication());
+console.log(".getAddressSession():" + addr.getAddressSession());
+console.log(".isValid():" + addr.isValid());
+console.log(".getRegex():", addr.getRegexObj());
+
+console.log(new Array(51).join("="));
+console.log('new webinosAddress("standalone/Dασδ-asd123")');
+addr = new webinosAddress("standalone/Dασδ-asd123");
+console.log(addr);
+console.log(".pzhUser:" + addr.pzhUser);
+console.log(".pzhAddress:" + addr.pzhAddress);
+console.log(".deviceId:" + addr.deviceId);
+console.log(".applicationId:" + addr.applicationId);
+console.log(".sessionId:" + addr.sessionId);
+console.log(".toString():" + addr.toString());
+console.log(".getAddress():" + addr.getAddress());
+console.log(".getPzh():" + addr.getPzh());
+console.log(".getAddressDevice():" + addr.getAddressDevice());
+console.log(".getAddressApplication():" + addr.getAddressApplication());
+console.log(".getAddressSession():" + addr.getAddressSession());
+console.log(".isValid():" + addr.isValid());
+
+console.log(new Array(30).join("-"));
+console.log(".applicationId = '5556'");
+addr.applicationId = '5556';
+console.log(".isValid():" + addr.isValid());
+console.log(".getAddress():" + addr.getAddress());
+console.log(".getAddressApplication():" + addr.getAddressApplication());
+console.log(".getAddressSession():" + addr.getAddressSession());
+
+console.log(new Array(30).join("-"));
+console.log(".applicationId = ''");
+console.log(".sessionId = '99999'");
+addr.applicationId = '';
+addr.sessionId = '99999';
+console.log(".isValid():" + addr.isValid());
+console.log(".getAddress():" + addr.getAddress());
+console.log(".getAddressApplication():" + addr.getAddressApplication());
+console.log(".getAddressSession():" + addr.getAddressSession());
+//This should throw an error
+try {
+    console.log(".isValid(true):" + addr.isValid(true));
+} catch (e) {
+    console.log("Expected Error:");
+    console.error(e.message);
+}
+
+console.log(new Array(30).join("-"));
+console.log(".setAddress('cbot@pzh.webinos.org/DmyLaptop/Aabcdef1234567890ABCDEF1234567890/S234')");
+addr.setAddress('cbot@pzh.webinos.org/DmyLaptop/Aabcdef1234567890ABCDEF1234567890/S234');
+console.log(".isValid():" + addr.isValid());
+console.log(".getAddress():" + addr.getAddress());
+console.log(".setPzh('cbot@localhost')");
+addr.setPzh('cbot@localhost');
+console.log(".isValid():" + addr.isValid());
+console.log(".getAddress():" + addr.getAddress());
+console.log(".setPzh('test-23','my-domain.com')");
+addr.setPzh('test-23', 'my-domain.com');
+console.log(".isValid():" + addr.isValid());
+console.log(".getAddress():" + addr.getAddress());
+//This should throw an error
+try {
+    console.log(".setPzh('user@mail.com','pzh.webinos.org')");
+    addr.setPzh('user@mail.com', 'pzh.webinos.org');
+} catch (e) {
+    console.log("Expected Error:");
+    console.error(e.message);
+}
+//This should throw an error
+try {
+    console.log(".setPzh('user@-invalid.')");
+    addr.setPzh('user@-invalid.');
+} catch (e) {
+    console.log("Expected Error:");
+    console.error(e.message);
+}
+//This should throw an error
+try {
+    console.log(".setAddress('random/DmyLaptop/Dsecond/AnonHex234242/Sletters234/whatever')");
+    addr.setAddress('random/DmyLaptop/Dsecond/AnonHex234242/Sletters234/whatever');
+} catch (e) {
+    console.log("Expected Error:");
+    console.error(e.message);
+}
+console.log(new Array(30).join("-"));
+console.log('new webinosAddress()');
+addr = new webinosAddress();
+console.log('.setPzh("user@test.com")');
+addr.setPzh("user@test.com");
+console.log('.setDeviceId("abcαβγ-123ABC")');
+addr.setDeviceId("abcαβγ-123ABC");
+console.log('.setApplicationId("abcdef1234567890ABCDEF1234567890")');
+addr.setApplicationId("abcdef1234567890ABCDEF1234567890");
+console.log('.setSessionId("1234567890")');
+addr.setSessionId("1234567890");
+console.log('.setFriendlyName("My Device")');
+addr.setFriendlyName("My Device");
+console.log('.getFriendlyName(): '+addr.getFriendlyName());
+console.log('.getAddress(): '+addr.getAddress());
+console.log('Address Object:', addr);
+
+
+
+</script>
+Check the console for the tests output.
+</body>
+</html>
